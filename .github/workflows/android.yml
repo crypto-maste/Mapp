@@ -9,19 +9,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip
-          pip install buildozer cython
+    - uses: actions/checkout@v3
 
-      - name: Build APK
-        run: |
-          buildozer android debug
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
-        with:
-          name: myapp-apk
-          path: bin/*.apk
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y git zip unzip openjdk-17-jdk python3-pip \
+          adb clang libncurses5 libstdc++6 zlib1g-dev libffi-dev \
+          libssl-dev pkg-config liblzma-dev libbz2-dev libsqlite3-dev
+        pip install buildozer cython
+
+    - name: Build APK
+      run: |
+        buildozer android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: myapp-apk
+        path: bin/*.apk
