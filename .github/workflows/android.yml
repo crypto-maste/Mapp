@@ -25,19 +25,29 @@ jobs:
         pip install --upgrade pip
         pip install cython buildozer
 
-    - name: Install Android SDK
-      uses: android-actions/setup-android@v2
-
-    - name: Accept licenses & install build-tools
+    - name: Set up Android SDK manually
+      env:
+        ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
       run: |
-        yes | sdkmanager --licenses
-        sdkmanager "platforms;android-30" "build-tools;30.0.3"
+        mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+        cd $ANDROID_SDK_ROOT/cmdline-tools
+        wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O tools.zip
+        unzip tools.zip
+        mv cmdline-tools latest
+        yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses
+        $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} \
+          "platform-tools" "platforms;android-30" "build-tools;30.0.3"
 
     - name: Build APK
-      run: buildozer android debug
+      env:
+        ANDROIDSDK: ${{ github.workspace }}/android-sdk
+      run: |
+        export PATH=$ANDROIDSDK/platform-tools:$PATH
+        buildozer android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: myapp-apk
         path: bin/*.apk
+
