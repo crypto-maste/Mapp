@@ -1,9 +1,9 @@
-# (tepada berilgan kodni shu faylga joyla va 
-# saqla: CTRL+X, Y, Enter)name: Build Kivy APK
-git add .github/workflows/android.yml on: git 
-commit -m "Added working GitHub Actions workflow 
-to build APK" push:
-git push origin main    branches: [main]
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -51,6 +51,3 @@ jobs:
       with:
         name: myapp-apk
         path: bin/*.apk
-
-
-
