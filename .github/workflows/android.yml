@@ -28,7 +28,7 @@ jobs:
         run: ./gradlew assembleRelease
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3  # v2 emas, v3 bo'lishi kerak
         with:
           name: release-apk
-          path: app/build/outputs/apk/release/*.apk
+          path: app/build/outputs/apk/
